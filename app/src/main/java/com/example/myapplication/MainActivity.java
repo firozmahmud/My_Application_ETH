@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             BigDecimal scaledBalance = new BigDecimal(unscaledBalance)
                     .divide(new BigDecimal(1000000000000000000L), 18, RoundingMode.HALF_UP);
 
-            txtEther.setText(scaledBalance + " " + getString(R.string.text_ether));
+            txtEther.setText(scaledBalance + " Ether");
 
 
             // To get the nonce
