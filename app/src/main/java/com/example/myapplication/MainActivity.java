@@ -7,7 +7,9 @@ import android.widget.TextView;
 
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.http.HttpService;
 
 import java.math.BigDecimal;
@@ -24,14 +26,16 @@ public class MainActivity extends AppCompatActivity {
      * 79437ae17dfd4a2dae17531caa28598f
      */
 
-    private TextView textView;
+    private TextView txtEther;
+    private TextView txtNonce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = findViewById(R.id.txt);
+        txtEther = findViewById(R.id.txt);
+        txtNonce = findViewById(R.id.nonce);
 
         getETHBalance();
     }
@@ -63,12 +67,34 @@ public class MainActivity extends AppCompatActivity {
             BigDecimal scaledBalance = new BigDecimal(unscaledBalance)
                     .divide(new BigDecimal(1000000000000000000L), 18, RoundingMode.HALF_UP);
 
-            textView.setText(scaledBalance + " " + getString(R.string.text_ether));
+            txtEther.setText(scaledBalance + " " + getString(R.string.text_ether));
+
+
+            // To get the nonce
+            BigInteger nonce = getNonce(web3jClient, ethAddress);
+            txtNonce.setText(nonce + " Nonce");
 
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             e.printStackTrace();
-            textView.setText(e.getMessage());
+            txtEther.setText(e.getMessage());
         }
 
+    }
+
+    private BigInteger getNonce(Web3j web3jClient, String ethAddress) {
+        EthGetTransactionCount ethGetTransactionCount = null;
+        try {
+            ethGetTransactionCount = web3jClient.ethGetTransactionCount(
+                    ethAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        BigInteger nonce = null;
+        if (ethGetTransactionCount != null) {
+            nonce = ethGetTransactionCount.getTransactionCount();
+        }
+
+        return nonce;
     }
 }
