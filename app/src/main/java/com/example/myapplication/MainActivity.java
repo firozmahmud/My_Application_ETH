@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -68,11 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Some error occurred", Toast.LENGTH_SHORT).show();
-
             textView.setText(e.getMessage());
         }
-
 
     }
 }
